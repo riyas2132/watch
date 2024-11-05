@@ -1,0 +1,264 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-Commerce Product Listing</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
+    <style>
+        
+		:root {
+    --primary-color: #1976D2;
+    --secondary-color: #E3F2FD;
+    --accent-color: #FFFFFF;
+}
+
+		body {
+    background-color: var(--secondary-color);
+    color: var(--primary-color);
+}
+        .custom-header {
+    background-color: var(--primary-color);
+}
+
+        .custom-header .navbar-brand {
+    color: var(--accent-color);
+}
+        .product-card {
+            height: 100%;
+            transition: transform 0.3s ease;
+            background-color: #FFFFFF;
+        }
+        .product-card:hover {
+            transform: translateY(-5px);
+        }
+        .product-image {
+            height: 200px;
+            object-fit: cover;
+        }
+        
+		#cartButton {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1000;
+    background-color: #4a4a4a;
+    border-color: #4a4a4a;
+    color: #ffffff;
+    font-weight: bold;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease;
+    padding: 10px 20px;
+    font-size: 1.1em;
+}
+
+#cartButton:hover {
+    background-color: #333333;
+    border-color: #333333;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+}
+		
+        .quantity-control {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+        .quantity-input {
+            width: 40px;
+            text-align: center;
+            border: none;
+            background-color: transparent;
+        }
+        .footer {
+    background-color: var(--primary-color);
+    color: var(--accent-color);
+}
+        .product-heading {
+            font-size: 1.5em;
+            text-align: left;
+            margin-bottom: 15px;
+            color: #dbd08c;
+        }
+            .btn-outline-secondary {
+        padding: 0.375rem 0.75rem;
+    }
+	.quantity-display {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 60px;
+        height: 100%;
+    }
+        .btn-outline-secondary:hover {
+    color: var(--accent-color);
+    background-color: var(--primary-color);
+}
+       .footer .section {
+            flex: 1;
+            padding: 20px;
+            min-width: 200px;
+        }
+        .footer .section h3 {
+            margin-top: 0;
+        }
+        .footer .social-icons {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            justify-content: left;
+        }
+        .footer .social-icons li {
+            margin: 0 10px;
+        }
+        .footer .social-icons a {
+            color: white;
+            text-decoration: none;
+            font-size: 24px;
+        }
+  #loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+.spinner-border {
+    width: 3rem;
+    height: 3rem;
+}   
+.out-of-stock {
+        opacity: 0.7;
+    }
+    
+    .out-of-stock img {
+        filter: grayscale(100%);
+    }
+    
+    .out-of-stock .card-body {
+        position: relative;
+    }
+    
+    .text-danger.fw-bold {
+        font-size: 1.2em;
+        margin-top: auto;
+    }    
+    </style>
+</head>
+<body>
+	<div id="loading-overlay">
+    <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Loading...</span>
+    </div>
+	</div>
+    <!-- Updated Header -->
+    <header class="custom-header">
+    <nav class="navbar">
+        <div class="container d-flex justify-content-between align-items-center">
+            <a class="navbar-brand" href="#">Shop Name</a>
+            <div class="header-buttons d-flex align-items-center">
+				<a href="tel:" id="callButton" class="btn btn-primary me-3" title="Call us">
+				<i class="bi bi-telephone-fill fs-4"></i>
+				</a>
+				<a href="https://wa.me/" id="whatsappButton" class="btn btn-success me-3" target="_blank" title="Chat on WhatsApp">
+				<i class="bi bi-whatsapp fs-4"></i>
+				</a>
+				<a href="https://www.google.com/maps/dir/?api=1&destination=Facts+Computer+Software+House+LLC&origin=Facts+Computer+Software+House+LLC" id="glocation" class="btn btn-secondary" target="_blank" title="Location">
+				<i class="bi bi-geo-alt-fill fs-4"></i>
+				</a>
+			</div>
+
+        </div>
+    </nav>
+</header>
+
+    <div class="container py-4">
+        <h2 class="product-heading">Our Products</h2>
+        <div id="productCategories" class="mb-4">
+            <!-- Categories will be inserted here -->
+        </div>
+        <div class="input-group mb-4">
+            <input type="text" class="form-control" placeholder="Search products..." id="searchInput">
+            <button class="btn btn-outline-secondary" type="button" onclick="filterProducts()">Search</button>
+        </div>
+        <div id="productGrid" class="row row-cols-2 row-cols-md-2 row-cols-lg-4 g-4">
+            <!-- Products will be inserted here -->
+        </div>
+    </div>
+    <button id="cartButton" class="btn btn-primary btn-lg" style="display: none;">Proceed to Cart</button>
+
+    <!-- Cart Modal -->
+    <div class="modal fade" id="cartModal" tabindex="-1" aria-labelledby="cartModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="cartModalLabel">Your Cart</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="cartModalBody">
+                <!-- Cart contents will be inserted here -->
+            </div>
+			<div class="form-group mt-3">
+                <label for="addressInput" class="form-label">Delivery Address (Optional):</label>
+                <textarea class="form-control" id="addressInput" rows="3" placeholder="Enter your delivery address (optional)"></textarea>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-danger" id="clearCartButton" onclick="clearCart()">Clear Cart</button>
+                <button type="button" class="btn btn-primary" id="proceedToWhatsApp">Proceed to WhatsApp</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+    <!-- Footer -->
+    <footer class="footer mt-auto py-3">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4">
+                    <h5>About Us</h5>
+                    <p>Shop Name is dedicated to providing high-quality products and excellent customer service.</p>
+                </div>
+                <div class="col-md-4">
+                    <h5>Contact</h5>
+                    <p>Email: info@yourshop.com<br>Phone: +1 234 567 8900</p>
+                </div>
+				<div class="col-md-4">
+                   <h5>Follow Us</h5> 
+                <ul class="social-icons">
+                    <li><a id="facebookLink"  href="https://www.facebook.com" target="_blank"><i class="fab fa-facebook-f"></i></a></li>
+                    <li><a id="twitterLink"  href="https://www.twitter.com" target="_blank"><i class="fab fa-twitter"></i></a></li>
+                    <li><a id="instagramLink"  href="https://www.instagram.com" target="_blank"><i class="fab fa-instagram"></i></a></li>
+                    <li><a id="linkedinLink"  href="https://www.linkedin.com" target="_blank"><i class="fab fa-linkedin-in"></i></a></li>
+                </ul> 
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-md-12 text-center">
+                    <p>&copy; 2024 Shop Name. All rights reserved.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS and Popper.js -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://apis.google.com/js/api.js"></script>
+    <script>
+const _0x1583ed=_0x2348;(function(_0x5f2fa1,_0x148a88){const _0xd70198=_0x2348,_0x8141aa=_0x5f2fa1();while(!![]){try{const _0x3bcb5d=-parseInt(_0xd70198(0xd7))/0x1+-parseInt(_0xd70198(0xfe))/0x2+-parseInt(_0xd70198(0x7d))/0x3+parseInt(_0xd70198(0x9c))/0x4+parseInt(_0xd70198(0xd2))/0x5+parseInt(_0xd70198(0xa8))/0x6+parseInt(_0xd70198(0xf8))/0x7;if(_0x3bcb5d===_0x148a88)break;else _0x8141aa['push'](_0x8141aa['shift']());}catch(_0x4501c2){_0x8141aa['push'](_0x8141aa['shift']());}}}(_0x52d5,0x3c3a9));function debounce(_0x40b69b,_0x46374f){let _0x351595;return function(..._0x4e8a50){const _0x243c9c=_0x2348;clearTimeout(_0x351595),_0x351595=setTimeout(()=>_0x40b69b[_0x243c9c(0x7c)](this,_0x4e8a50),_0x46374f);};}showLoading();function showLoading(){const _0x53abc6=_0x2348;document['getElementById'](_0x53abc6(0x8d))[_0x53abc6(0x10a)][_0x53abc6(0x10e)]=_0x53abc6(0xc6);}function hideLoading(){const _0x2b1fd0=_0x2348;document['getElementById']('loading-overlay')['style'][_0x2b1fd0(0x10e)]='none';}const API_KEY=_0x1583ed(0xf3),SHEET_ID=_0x1583ed(0xc9),SHEET_NAME=_0x1583ed(0x80);let cart={},products=[],categories=[],shopName=_0x1583ed(0x105),shopEmail='info@yourshop.com',Phone=_0x1583ed(0xed),Facebook=_0x1583ed(0x99),Twitter='https://www.twitter.com',Instagram=_0x1583ed(0x7e),Linkedin=_0x1583ed(0x113),Location='';function _0x52d5(){const _0x4271e9=['#1976D2','push',',\x20-1)\x22>-</button>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<span\x20id=\x22modal-quantity-','toFixed','--secondary-color','--accent-color','.footer\x20h5','Modal','textContent','toLowerCase','cartModalBody','setProperty','<p\x20class=\x22text-danger\x20fw-bold\x22>Out\x20of\x20Stock</p>','<li\x20class=\x22list-group-item\x20d-flex\x20justify-content-between\x20align-items-center\x20fw-bold\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20Total\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<span\x20id=\x22modal-grand-total\x22>AED\x20','Email:\x20','\x0a\x0aDelivery\x20Address:\x0a','open','values','documentElement','callButton','\x0aTotal:\x20AED\x20','flex','cartButton','https://wa.me/','1JziliJ6oVkgMlm-Aa2jMc2s4LBSgHpZCoEaXTd9u9s0','entries','.custom-header','_blank','linkedinLink','remove','.\x20All\x20rights\x20reserved.','Email','ShopName','2048985BUBGDC','spreadsheets','instagramLink','.footer','value','491301TUCuUV','<span\x20style=\x22color:\x20red;\x22\x20class=\x22text-decoration-line-through\x22>AED\x20','then','.navbar-brand','code','\x20-\x20AED\x20','<ul\x20class=\x22list-group\x22>','Colour','backgroundColor','Facebook','min','getInstance','modal-grand-total','Twitter','/Kg','\x20items,\x20AED\x20','<li\x20class=\x22list-group-item\x20d-flex\x20justify-content-between\x20align-items-center\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<button\x20class=\x22btn\x20btn-sm\x20btn-outline-secondary\x20me-2\x22\x20onclick=\x22changeQuantity(','log','#FFFFFF','init','add','</span>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<button\x20class=\x22btn\x20btn-sm\x20btn-outline-secondary\x20ms-2\x22\x20onclick=\x22changeQuantity(','000000','<button\x20class=\x22btn\x20btn-outline-secondary\x20m-1\x22\x20onclick=\x22setCategoryAndFilter(\x27','div','sheets','Proceed\x20to\x20Cart\x20(','none','AIzaSyByyiuwuJBysKl2xtvl6wCw6Gz9shyDzXs',',\x201)\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<i\x20class=\x22bi\x20bi-plus\x22></i>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</button>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</div>','\x22>AED\x20','<div\x20class=\x22mt-auto\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div\x20class=\x22d-flex\x20align-items-center\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<button\x20class=\x22btn\x20btn-outline-secondary\x22\x20type=\x22button\x22\x20onclick=\x22changeQuantity(','target','4462766hEDsdK','Location','error','</span>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<span\x20id=\x22modal-total-','#productCategories\x20.btn-primary','oldPrice','969372dzjGbO','</span>\x0a\x20\x20\x20\x20\x20\x20\x20\x20</li>\x0a\x20\x20\x20\x20</ul>','image','classList','className','.footer\x20.col-md-4:nth-child(2)\x20p','body','Shop\x20Name','\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<img\x20src=\x22','productCategories','<br>Phone:\x20','innerHTML','style','length','proceedToWhatsApp','show','display','cartModal','All','includes','price','https://www.linkedin.com','.product-heading,\x20.btn-outline-secondary','client','tel:+','color','\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<span\x20class=\x22text-primary\x20fw-bold\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20AED\x20','productGrid','I\x27d\x20like\x20to\x20order\x20the\x20following\x20items:\x0a\x0a','stock','href','</span>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<button\x20class=\x22btn\x20btn-outline-secondary\x22\x20type=\x22button\x22\x20onclick=\x22changeQuantity(','apply','905046hGaptG','https://www.instagram.com','\x22\x20class=\x22card-img-top\x20product-image\x22\x20alt=\x22','Sheet1!A:S','modal-total-','btn-outline-secondary','.product-card','querySelector','btn-primary','querySelectorAll','trim','Linkedin','message','forEach','reduce','result','loading-overlay','getElementById','map','quantity-','Error\x20initializing\x20GAPI\x20client:\x20','\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20</div>','\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div\x20class=\x22card-body\x20d-flex\x20flex-column\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<h5\x20class=\x22card-title\x22>','split','keys','addressInput','AED\x20','onclick','https://www.facebook.com','#productCategories\x20.btn','whatsappButton','1585856lnMzId','modal-quantity-','Error:\x20','\x20each\x20=\x20AED\x20','facebookLink',',\x201)\x22>+</button>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20','searchInput','©\x202024\x20','get','<button\x20class=\x22btn\x20btn-primary\x20m-1\x22\x20onclick=\x22setCategoryAndFilter(\x27All\x27)\x22>All</button>\x0a\x20\x20\x20\x20\x20\x20\x20\x20',',\x20-1)\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<i\x20class=\x22bi\x20bi-dash\x22></i>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</button>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div\x20class=\x22mx-2\x20text-center\x22\x20style=\x22min-width:\x2060px;\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<span\x20id=\x22quantity-','appendChild','483402XnsDXy','?text=','\x20\x20\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<span\x20class=\x22text-primary\x22>AED\x20','block','<div\x20class=\x22card\x20h-100\x20product-card\x20','.btn-outline-secondary:hover','\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</span>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</p>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20','\x20is\x20dedicated\x20to\x20providing\x20high-quality\x20products\x20and\x20excellent\x20customer\x20service.','Your\x20cart\x20is\x20empty!'];_0x52d5=function(){return _0x4271e9;};return _0x52d5();}function initClient(){const _0x35bb23=_0x1583ed;showLoading(),gapi[_0x35bb23(0x115)][_0x35bb23(0xea)]({'apiKey':API_KEY,'discoveryDocs':['https://sheets.googleapis.com/$discovery/rest?version=v4']})['then'](function(){loadSheetsData();},function(_0x4baf07){const _0x942084=_0x35bb23;console[_0x942084(0xe8)](_0x942084(0x91)+_0x4baf07),hideLoading();});}function loadSheetsData(){const _0x7132f3=_0x1583ed;gapi[_0x7132f3(0x115)][_0x7132f3(0xf0)][_0x7132f3(0xd3)][_0x7132f3(0xc2)][_0x7132f3(0xa4)]({'spreadsheetId':SHEET_ID,'range':SHEET_NAME})[_0x7132f3(0xd9)](function(_0x59ef4f){const _0x418c11=_0x7132f3,_0xc8671=_0x59ef4f[_0x418c11(0x8c)]['values'],_0x4be9a9=document[_0x418c11(0x8e)](_0x418c11(0x119));let _0x4fc15e=_0x418c11(0xb1),_0x4b5671='#E3F2FD',_0x2a9f07=_0x418c11(0xe9);for(let _0x244cdb=0x1;_0x244cdb<_0xc8671[_0x418c11(0x10b)];_0x244cdb++){const _0x30b559=_0xc8671[_0x244cdb];_0x30b559[0x11]===_0x418c11(0xd1)&&(shopName=_0x30b559[0x12],updateShopName()),_0x30b559[0x11]===_0x418c11(0xd0)&&(shopEmail=_0x30b559[0x12]),_0x30b559[0x11]==='Phone'&&(Phone=_0x30b559[0x12]),_0x30b559[0x11]===_0x418c11(0xf9)&&(Location=_0x30b559[0x12]),_0x30b559[0x11]===_0x418c11(0xe0)&&(Facebook=_0x30b559[0x12]),_0x30b559[0x11]===_0x418c11(0xe4)&&(Twitter=_0x30b559[0x12]),_0x30b559[0x11]==='Instagram'&&(Instagram=_0x30b559[0x12]),_0x30b559[0x11]===_0x418c11(0x88)&&(Linkedin=_0x30b559[0x12]),_0x30b559[0x11]===_0x418c11(0xde)&&([_0x4fc15e,_0x4b5671,_0x2a9f07]=_0x30b559[0x12][_0x418c11(0x94)](','),updateColors(_0x4fc15e,_0x4b5671,_0x2a9f07)),updateShopEmailPhone(),updateSocialMedia(Facebook,Twitter,Instagram,Linkedin);}for(let _0x2b4619=0x1;_0x2b4619<_0xc8671[_0x418c11(0x10b)];_0x2b4619++){const _0x2eb515=_0xc8671[_0x2b4619];if(_0x2eb515[0x0]&&_0x2eb515[0x1]&&_0x2eb515[0x2]){products[_0x418c11(0xb2)]({'code':_0x2eb515[0x0],'price':parseFloat(_0x2eb515[0x1]),'oldPrice':parseFloat(_0x2eb515[0x4]),'image':_0x2eb515[0x2],'category':_0x2eb515[0x3],'kg':parseFloat(_0x2eb515[0x5])||0x1,'stock':parseInt(_0x2eb515[0x6])||0x0});!categories[_0x418c11(0x111)](_0x2eb515[0x3])&&categories['push'](_0x2eb515[0x3]);const _0x43a148=createProductCard(products[_0x418c11(0x10b)]-0x1);_0x4be9a9[_0x418c11(0xa7)](_0x43a148);}}renderCategories(),hideLoading();},function(_0x2d6646){const _0x1cab3c=_0x7132f3;console[_0x1cab3c(0xfa)](_0x1cab3c(0x9e)+_0x2d6646[_0x1cab3c(0x8c)][_0x1cab3c(0xfa)][_0x1cab3c(0x89)]),hideLoading();});}function updateColors(_0x214503,_0x1bc7c8,_0xebb0c5){const _0x3f5a0c=_0x1583ed;document[_0x3f5a0c(0xc3)][_0x3f5a0c(0x10a)][_0x3f5a0c(0xbc)]('--primary-color',_0x214503),document[_0x3f5a0c(0xc3)]['style'][_0x3f5a0c(0xbc)](_0x3f5a0c(0xb5),_0x1bc7c8),document[_0x3f5a0c(0xc3)][_0x3f5a0c(0x10a)][_0x3f5a0c(0xbc)](_0x3f5a0c(0xb6),_0xebb0c5),document['querySelector'](_0x3f5a0c(0xcb))['style'][_0x3f5a0c(0xdf)]=_0x214503,document[_0x3f5a0c(0x84)](_0x3f5a0c(0xda))[_0x3f5a0c(0x10a)][_0x3f5a0c(0x117)]=_0xebb0c5,document[_0x3f5a0c(0x84)](_0x3f5a0c(0x104))[_0x3f5a0c(0x10a)][_0x3f5a0c(0xdf)]=_0x1bc7c8,document[_0x3f5a0c(0x84)](_0x3f5a0c(0x104))[_0x3f5a0c(0x10a)][_0x3f5a0c(0x117)]=_0x214503,document['querySelectorAll'](_0x3f5a0c(0x114))['forEach'](_0x58f0e8=>{const _0x331455=_0x3f5a0c;_0x58f0e8['style']['color']=_0x214503,_0x58f0e8[_0x331455(0x10a)]['borderColor']=_0x214503;}),document['querySelectorAll'](_0x3f5a0c(0xad))['forEach'](_0x227fc5=>{const _0xf2915f=_0x3f5a0c;_0x227fc5[_0xf2915f(0x10a)][_0xf2915f(0x117)]=_0xebb0c5,_0x227fc5[_0xf2915f(0x10a)][_0xf2915f(0xdf)]=_0x214503;}),document['querySelector']('.footer')[_0x3f5a0c(0x10a)][_0x3f5a0c(0xdf)]=_0x214503,document['querySelector'](_0x3f5a0c(0xd5))[_0x3f5a0c(0x10a)][_0x3f5a0c(0x117)]=_0xebb0c5;}function createProductCard(_0x23664c){const _0x19dc9c=_0x1583ed,_0x3c855c=products[_0x23664c],_0x137cb6=_0x3c855c[_0x19dc9c(0x79)]===0x0,_0x503c38=document['createElement'](_0x19dc9c(0xef));return _0x503c38[_0x19dc9c(0x102)]='col',_0x503c38['innerHTML']=_0x19dc9c(0xac)+(_0x137cb6?'out-of-stock':'')+_0x19dc9c(0x106)+_0x3c855c[_0x19dc9c(0x100)]+_0x19dc9c(0x7f)+_0x3c855c[_0x19dc9c(0xdb)]+_0x19dc9c(0x93)+_0x3c855c[_0x19dc9c(0xdb)]+'</h5>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<p\x20class=\x22card-text\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20'+(_0x3c855c[_0x19dc9c(0xfd)]>_0x3c855c[_0x19dc9c(0x112)]?_0x19dc9c(0xd8)+_0x3c855c[_0x19dc9c(0xfd)][_0x19dc9c(0xb4)](0x2)+'</span><br>':'')+_0x19dc9c(0x118)+_0x3c855c[_0x19dc9c(0x112)][_0x19dc9c(0xb4)](0x2)+'\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20'+(_0x3c855c['kg']&&_0x3c855c['kg']!==0x1?_0x19dc9c(0xe5):'')+_0x19dc9c(0xae)+(_0x137cb6?_0x19dc9c(0xbd):_0x19dc9c(0xf6)+_0x23664c+_0x19dc9c(0xa6)+_0x23664c+'\x22>'+(cart[_0x23664c]||0x0)+_0x19dc9c(0x7b)+_0x23664c+_0x19dc9c(0xf4))+_0x19dc9c(0x92),_0x503c38;}function renderCategories(){const _0xa3eff0=_0x1583ed,_0x3b16a8=document[_0xa3eff0(0x8e)](_0xa3eff0(0x107));_0x3b16a8['innerHTML']=_0xa3eff0(0xa5)+categories[_0xa3eff0(0x8f)](_0x11b1f4=>_0xa3eff0(0xee)+_0x11b1f4+'\x27)\x22>'+_0x11b1f4+'</button>')['join']('');}function filterProducts(){const _0x1efb1e=_0x1583ed,_0x30666d=document[_0x1efb1e(0x8e)](_0x1efb1e(0xa2))[_0x1efb1e(0xd6)]['toLowerCase'](),_0x28cc43=document[_0x1efb1e(0x84)](_0x1efb1e(0xfc))[_0x1efb1e(0xb9)],_0x49ebd4=document[_0x1efb1e(0x8e)](_0x1efb1e(0x119));_0x49ebd4[_0x1efb1e(0x109)]='',products[_0x1efb1e(0x8a)]((_0x4f5267,_0x555da1)=>{const _0x5d8025=_0x1efb1e,_0x109fdf=_0x28cc43===_0x5d8025(0x110)||_0x4f5267['category']===_0x28cc43,_0x2d8fa9=_0x4f5267[_0x5d8025(0xdb)][_0x5d8025(0xba)]()[_0x5d8025(0x111)](_0x30666d);if(_0x109fdf&&_0x2d8fa9){const _0x5dd0cd=createProductCard(_0x555da1);_0x49ebd4['appendChild'](_0x5dd0cd);}});}function setCategoryAndFilter(_0x52c460){const _0x3c2fff=_0x1583ed,_0x3d0efe=document[_0x3c2fff(0x86)](_0x3c2fff(0x9a));_0x3d0efe[_0x3c2fff(0x8a)](_0x559fb9=>{const _0x5f355b=_0x3c2fff;_0x559fb9[_0x5f355b(0x101)][_0x5f355b(0xce)](_0x5f355b(0x85)),_0x559fb9['classList']['add'](_0x5f355b(0x82));}),event[_0x3c2fff(0xf7)]['classList'][_0x3c2fff(0xce)](_0x3c2fff(0x82)),event[_0x3c2fff(0xf7)][_0x3c2fff(0x101)][_0x3c2fff(0xeb)](_0x3c2fff(0x85)),filterProducts();}function updateShopName(){const _0x43e1ac=_0x1583ed;document[_0x43e1ac(0x84)](_0x43e1ac(0xda))[_0x43e1ac(0xb9)]=shopName,document[_0x43e1ac(0x84)](_0x43e1ac(0xb7))[_0x43e1ac(0xb9)]='About\x20'+shopName,document['querySelector']('.footer\x20p')[_0x43e1ac(0xb9)]=shopName+_0x43e1ac(0xaf),document[_0x43e1ac(0x84)]('.footer\x20.text-center\x20p')['textContent']=_0x43e1ac(0xa3)+shopName+_0x43e1ac(0xcf);}function updateShopEmailPhone(){const _0x44bcec=_0x1583ed;document[_0x44bcec(0x84)](_0x44bcec(0x103))[_0x44bcec(0x109)]=_0x44bcec(0xbf)+shopEmail+_0x44bcec(0x108)+Phone,document['getElementById'](_0x44bcec(0xc4))['href']=_0x44bcec(0x116)+Phone,document[_0x44bcec(0x8e)](_0x44bcec(0x9b))[_0x44bcec(0x7a)]='https://wa.me/'+Phone,document['getElementById']('glocation')[_0x44bcec(0x7a)]=''+Location;}function _0x2348(_0x4d440a,_0x3d17c2){const _0x52d5ee=_0x52d5();return _0x2348=function(_0x234843,_0x448677){_0x234843=_0x234843-0x79;let _0x1bbcde=_0x52d5ee[_0x234843];return _0x1bbcde;},_0x2348(_0x4d440a,_0x3d17c2);}function updateSocialMedia(_0x3d7d0d,_0x2ca127,_0x1b4fbf,_0x9c6b43){const _0x5ce596=_0x1583ed;document['getElementById'](_0x5ce596(0xa0))[_0x5ce596(0x7a)]=_0x3d7d0d,document[_0x5ce596(0x8e)]('twitterLink')[_0x5ce596(0x7a)]=_0x2ca127,document[_0x5ce596(0x8e)](_0x5ce596(0xd4))[_0x5ce596(0x7a)]=_0x1b4fbf,document[_0x5ce596(0x8e)](_0x5ce596(0xcd))[_0x5ce596(0x7a)]=_0x9c6b43;}function changeQuantity(_0x5b14a9,_0x3cb65c){const _0x35a897=_0x1583ed,_0x1e9bb1=products[_0x5b14a9];if(_0x1e9bb1[_0x35a897(0x79)]===0x0)return;const _0x410b0a=_0x1e9bb1['kg'],_0x44c754=document[_0x35a897(0x8e)](_0x35a897(0x90)+_0x5b14a9),_0x50596a=document['getElementById'](_0x35a897(0x9d)+_0x5b14a9);let _0x5dd8d2=cart[_0x5b14a9]||0x0,_0x1e72ef=_0x5dd8d2+_0x3cb65c*_0x410b0a;_0x1e72ef=Math[_0x35a897(0xe1)](Math['max'](0x0,_0x1e72ef),_0x1e9bb1[_0x35a897(0x79)]);_0x1e72ef===0x0?delete cart[_0x5b14a9]:cart[_0x5b14a9]=_0x1e72ef;_0x44c754&&(_0x44c754['textContent']=_0x1e72ef);if(_0x50596a){_0x50596a[_0x35a897(0xb9)]=_0x1e72ef;const _0x2f86c5=_0x1e9bb1[_0x35a897(0x112)]*_0x1e72ef,_0x101b78=document['getElementById'](_0x35a897(0x81)+_0x5b14a9);_0x101b78&&(_0x101b78[_0x35a897(0xb9)]=_0x35a897(0x97)+_0x2f86c5[_0x35a897(0xb4)](0x2));let _0x5be297=0x0;for(const [_0x4f4872,_0x3dc353]of Object[_0x35a897(0xca)](cart)){_0x5be297+=products[_0x4f4872][_0x35a897(0x112)]*_0x3dc353;}const _0x1cc1e2=document[_0x35a897(0x8e)](_0x35a897(0xe3));_0x1cc1e2&&(_0x1cc1e2[_0x35a897(0xb9)]=_0x35a897(0x97)+_0x5be297[_0x35a897(0xb4)](0x2));}updateCartButton();}function updateCartButton(){const _0x5a820d=_0x1583ed,_0x5c9e7b=document[_0x5a820d(0x8e)]('cartButton'),_0x505b8b=Object[_0x5a820d(0xc2)](cart)['reduce']((_0x5e0d3d,_0x1ee7c7)=>_0x5e0d3d+_0x1ee7c7,0x0),_0x332130=Object['entries'](cart)[_0x5a820d(0x8b)]((_0x28651b,[_0x5263e3,_0x52ce94])=>{const _0x45354a=_0x5a820d;return _0x28651b+products[_0x5263e3][_0x45354a(0x112)]*_0x52ce94;},0x0);_0x505b8b>0x0?(_0x5c9e7b[_0x5a820d(0x10a)]['display']=_0x5a820d(0xab),_0x5c9e7b['textContent']=_0x5a820d(0xf1)+_0x505b8b+_0x5a820d(0xe6)+_0x332130['toFixed'](0x2)+')'):_0x5c9e7b[_0x5a820d(0x10a)]['display']=_0x5a820d(0xf2);}function clearCart(){const _0x1fb2c5=_0x1583ed;cart={},products[_0x1fb2c5(0x8a)]((_0x27b8a3,_0x2661e5)=>{const _0x52606f=_0x1fb2c5,_0x2dfbbb=document[_0x52606f(0x8e)]('quantity-'+_0x2661e5);_0x2dfbbb&&(_0x2dfbbb[_0x52606f(0xb9)]='0');}),updateCartButton();const _0x2b5f78=bootstrap[_0x1fb2c5(0xb8)][_0x1fb2c5(0xe2)](document[_0x1fb2c5(0x8e)]('cartModal'));_0x2b5f78&&_0x2b5f78['hide']();}function showCartModal(){const _0x26de1b=_0x1583ed,_0x455f6a=document[_0x26de1b(0x8e)](_0x26de1b(0xbb));let _0x244206=_0x26de1b(0xdd),_0x371908=0x0;for(const [_0x49042c,_0x5d2c39]of Object[_0x26de1b(0xca)](cart)){const _0x3327c8=products[_0x49042c],_0x496794=_0x3327c8[_0x26de1b(0x112)]*_0x5d2c39;_0x371908+=_0x496794,_0x244206+=_0x26de1b(0xe7)+_0x49042c+_0x26de1b(0xb3)+_0x49042c+'\x22>'+_0x5d2c39+_0x26de1b(0xec)+_0x49042c+_0x26de1b(0xa1)+_0x3327c8[_0x26de1b(0xdb)]+_0x26de1b(0xaa)+_0x3327c8['price']['toFixed'](0x2)+'\x20'+(_0x3327c8['kg']&&_0x3327c8['kg']!==0x1?'/Kg':'')+_0x26de1b(0xfb)+_0x49042c+_0x26de1b(0xf5)+_0x496794[_0x26de1b(0xb4)](0x2)+'</span>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</li>';}_0x244206+=_0x26de1b(0xbe)+_0x371908[_0x26de1b(0xb4)](0x2)+_0x26de1b(0xff),_0x455f6a[_0x26de1b(0x109)]=_0x244206;const _0x2a09e0=new bootstrap[(_0x26de1b(0xb8))](document[_0x26de1b(0x8e)](_0x26de1b(0x10f)));_0x2a09e0[_0x26de1b(0x10d)]();}function searchProducts(){const _0x2971f6=_0x1583ed,_0x432f16=document[_0x2971f6(0x8e)](_0x2971f6(0xa2))[_0x2971f6(0xd6)][_0x2971f6(0xba)](),_0x151507=document[_0x2971f6(0x86)](_0x2971f6(0x83));_0x151507['forEach']((_0x4fd5c4,_0x40120f)=>{const _0x52b022=_0x2971f6,_0xc408d3=products[_0x40120f][_0x52b022(0xdb)][_0x52b022(0xba)]();_0xc408d3[_0x52b022(0x111)](_0x432f16)?_0x4fd5c4['parentElement']['style'][_0x52b022(0x10e)]='':_0x4fd5c4['parentElement'][_0x52b022(0x10a)][_0x52b022(0x10e)]='none';});}document['getElementById'](_0x1583ed(0xc7))[_0x1583ed(0x98)]=function(){const _0x5602c7=_0x1583ed;Object[_0x5602c7(0x95)](cart)[_0x5602c7(0x10b)]>0x0?showCartModal():alert(_0x5602c7(0xb0));},document[_0x1583ed(0x8e)](_0x1583ed(0x10c))[_0x1583ed(0x98)]=function(){const _0x43ba3d=_0x1583ed,_0x351652=document[_0x43ba3d(0x8e)](_0x43ba3d(0x96))[_0x43ba3d(0xd6)][_0x43ba3d(0x87)]();let _0x3e4353=_0x43ba3d(0x11a),_0x54eb17=0x0;for(const [_0x58c4ce,_0x3887b3]of Object['entries'](cart)){const _0x5169e7=products[_0x58c4ce],_0x128252=_0x5169e7[_0x43ba3d(0x112)]*_0x3887b3;_0x54eb17+=_0x128252,_0x3e4353+=_0x3887b3+'x\x20'+_0x5169e7['code']+_0x43ba3d(0xdc)+_0x5169e7[_0x43ba3d(0x112)][_0x43ba3d(0xb4)](0x2)+_0x43ba3d(0x9f)+_0x128252[_0x43ba3d(0xb4)](0x2)+'\x0a';}_0x3e4353+=_0x43ba3d(0xc5)+_0x54eb17['toFixed'](0x2);_0x351652&&(_0x3e4353+=_0x43ba3d(0xc0)+_0x351652);_0x3e4353+='\x0a\x0aPlease\x20confirm\x20my\x20order.\x20Thank\x20you!';const _0x540899=encodeURIComponent(_0x3e4353),_0x217ac1=_0x43ba3d(0xc8)+Phone+_0x43ba3d(0xa9)+_0x540899;window[_0x43ba3d(0xc1)](_0x217ac1,_0x43ba3d(0xcc)),clearCart();},gapi['load'](_0x1583ed(0x115),initClient),document[_0x1583ed(0x8e)]('searchInput')['oninput']=debounce(filterProducts,0x12c);
+    </script>
+</body>
+</html>
